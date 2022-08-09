@@ -1,13 +1,11 @@
 package com.pizzadeliverybackend.controllers;
 
+import com.pizzadeliverybackend.domain.ClientOrder;
 import com.pizzadeliverybackend.domain.EntityList;
-import com.pizzadeliverybackend.domain.Order;
 import com.pizzadeliverybackend.services.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/orders/")
@@ -17,32 +15,32 @@ public class OrderController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public EntityList<Order> getAllOrders() {
+    public EntityList<ClientOrder> getAllOrders() {
         return orderService.getOrders();
     }
 
     @GetMapping("active")
     @ResponseStatus(HttpStatus.OK)
-    public EntityList<Order> getActiveAllOrders() {
+    public EntityList<ClientOrder> getActiveAllOrders() {
         return orderService.getActiveOrders();
     }
 
     @PutMapping ("{orderId}/{orderStatus}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void changeOrderStatus(
-            @PathVariable String orderId, @PathVariable String orderStatus) {
+            @PathVariable Long orderId, @PathVariable String orderStatus) {
         orderService.changeOrderStatus(orderId,orderStatus);
     }
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public void createOrder(@RequestBody Order order) {
+    public void createOrder(@RequestBody ClientOrder order) {
         orderService.createOrder(order);
     }
 
     @DeleteMapping("{orderId}")
     @ResponseStatus(HttpStatus.FOUND)
-    public void deactivateOrder(@PathVariable String orderId) {
-        orderService.deactivateOrder(orderId);
+    public void deactivateOrder(@PathVariable Long orderId) {
+        orderService.deleteOrder(orderId);
     }
 }

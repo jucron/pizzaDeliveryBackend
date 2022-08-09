@@ -1,18 +1,17 @@
 package com.pizzadeliverybackend.services;
 
+import com.pizzadeliverybackend.domain.ClientOrder;
 import com.pizzadeliverybackend.domain.EntityList;
-import com.pizzadeliverybackend.domain.Order;
-import org.springframework.stereotype.Service;
 
-@Service
+
 public interface OrderService {
-    EntityList<Order> getOrders();
+    EntityList<ClientOrder> getOrders();
 
-    EntityList<Order> getActiveOrders();
+    EntityList<ClientOrder> getActiveOrders();
 
-    void changeOrderStatus(String orderId, String orderStatus);
+    void changeOrderStatus(Long orderId, String orderStatus);
 
-    void createOrder(Order order);
+    void createOrder(ClientOrder order);
 
-    void deactivateOrder(String orderId);
+    void deleteOrder(Long orderId);
 }

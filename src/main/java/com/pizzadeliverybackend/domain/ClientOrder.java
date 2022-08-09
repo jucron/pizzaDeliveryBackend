@@ -7,7 +7,6 @@ import lombok.With;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import java.time.LocalTime;
 import java.util.UUID;
@@ -17,10 +16,10 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @With
-public class Order {
+public class ClientOrder {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private UUID id;
 
     private String clientName;
