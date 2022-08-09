@@ -1,4 +1,4 @@
-package com.example.pizzadeliverybackend;
+package com.pizzadeliverybackend;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

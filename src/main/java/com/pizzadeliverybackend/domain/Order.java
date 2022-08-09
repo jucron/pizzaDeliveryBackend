@@ -1,4 +1,4 @@
-package com.example.pizzadeliverybackend.domain;
+package com.pizzadeliverybackend.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

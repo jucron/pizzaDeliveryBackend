@@ -1,6 +1,6 @@
-package com.example.pizzadeliverybackend.repositories;
+package com.pizzadeliverybackend.repositories;
 
-import com.example.pizzadeliverybackend.domain.Order;
+import com.pizzadeliverybackend.domain.Order;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
