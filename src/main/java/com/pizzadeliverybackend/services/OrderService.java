@@ -7,11 +7,15 @@ import com.pizzadeliverybackend.domain.EntityList;
 public interface OrderService {
     EntityList<ClientOrder> getOrders();
 
-    EntityList<ClientOrder> getActiveOrders();
+    EntityList<ClientOrder> getConfirmedOrders();
 
-    void changeOrderStatus(Long orderId, String orderStatus);
+    void changeOrderStatus(String orderId, String orderStatus);
 
     void createOrder(ClientOrder order);
 
-    void deleteOrder(Long orderId);
+    void deleteOrder(String orderId);
+
+    EntityList<ClientOrder> getAcceptedOrders();
+
+    EntityList<ClientOrder> getFinishedOrders();
 }
