@@ -39,7 +39,7 @@ class Bootstrap implements CommandLineRunner {
         orderService.createOrder(new ClientOrder()
                 .withClientName("Larry Doe")
                 .withAddress("larry's_address")
-                .withPizzaFlavor("mozzarella")
+                .withPizzaFlavor("margherita")
                 .withStatus("confirmed")
                 .withPaid(false));
     }

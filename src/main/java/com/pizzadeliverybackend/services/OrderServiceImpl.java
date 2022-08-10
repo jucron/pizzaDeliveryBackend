@@ -53,6 +53,11 @@ public class OrderServiceImpl implements OrderService {
                         orderRepository.findByStatus("finished"));
     }
 
+    @Override
+    public ClientOrder getOrder() {
+        return null;
+    }
+
 
     @Override
     public void changeOrderStatus(String orderId, String orderStatus) {
@@ -62,10 +67,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public void createOrder(ClientOrder order) {
+    public String createOrder(ClientOrder order) {
         order.setOrderTime(LocalTime.now());
-//        order.setId(UUID.randomUUID());
-        orderRepository.save(order);
+        ClientOrder orderSaved = orderRepository.save(order);
+        return orderSaved.getId().toString();
     }
 
     @Override

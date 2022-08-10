@@ -40,6 +40,13 @@ public class OrderController {
         return orderService.getFinishedOrders();
     }
 
+    @CrossOrigin
+    @GetMapping("{orderId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ClientOrder getOrder(@PathVariable String orderId) {
+        return orderService.getOrder();
+    }
+
     @PutMapping ("{orderId}/{orderStatus}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void changeOrderStatus(
@@ -49,8 +56,8 @@ public class OrderController {
 
     @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
-    public void createOrder(@RequestBody ClientOrder order) {
-        orderService.createOrder(order);
+    public String createOrder(@RequestBody ClientOrder order) {
+        return orderService.createOrder(order);
     }
 
     @DeleteMapping("{orderId}")

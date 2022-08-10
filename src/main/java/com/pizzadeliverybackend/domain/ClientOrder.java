@@ -30,6 +30,4 @@ public class ClientOrder {
     private String status;
     private LocalTime orderTime;
     private boolean paid;
-
-
 }

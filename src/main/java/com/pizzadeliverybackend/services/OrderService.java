@@ -11,11 +11,13 @@ public interface OrderService {
 
     void changeOrderStatus(String orderId, String orderStatus);
 
-    void createOrder(ClientOrder order);
+    String createOrder(ClientOrder order);
 
     void deleteOrder(String orderId);
 
     EntityList<ClientOrder> getAcceptedOrders();
 
     EntityList<ClientOrder> getFinishedOrders();
+
+    ClientOrder getOrder();
 }
