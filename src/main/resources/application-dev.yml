@@ -14,4 +14,4 @@ server:
     key-store-type: pkcs12
     key-alias: pizzaDelivery
     key-password: password
-    enabled: true
+    enabled: false
