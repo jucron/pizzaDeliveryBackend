@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/orders/")
 @RequiredArgsConstructor
+@CrossOrigin
 public class OrderController {
     private final OrderService orderService;
 
@@ -19,28 +20,24 @@ public class OrderController {
         return orderService.getOrders();
     }
 
-    @CrossOrigin
     @GetMapping("confirmed")
     @ResponseStatus(HttpStatus.OK)
     public EntityList<ClientOrder> getConfirmedOrders() {
         return orderService.getConfirmedOrders();
     }
 
-    @CrossOrigin
     @GetMapping("accepted")
     @ResponseStatus(HttpStatus.OK)
     public EntityList<ClientOrder> getAcceptedOrders() {
         return orderService.getAcceptedOrders();
     }
 
-    @CrossOrigin
     @GetMapping("finished")
     @ResponseStatus(HttpStatus.OK)
     public EntityList<ClientOrder> getFinishedOrders() {
         return orderService.getFinishedOrders();
     }
 
-    @CrossOrigin
     @GetMapping("{orderId}")
     @ResponseStatus(HttpStatus.OK)
     public ClientOrder getOrder(@PathVariable String orderId) {
