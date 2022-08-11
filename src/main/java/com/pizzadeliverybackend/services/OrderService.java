@@ -19,5 +19,5 @@ public interface OrderService {
 
     EntityList<ClientOrder> getFinishedOrders();
 
-    ClientOrder getOrder();
+    ClientOrder getOrder(String orderId);
 }

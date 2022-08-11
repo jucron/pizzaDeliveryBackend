@@ -8,6 +8,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
 @SpringBootApplication
 public class PizzaDeliveryBackendApplication {
 
@@ -24,23 +28,23 @@ class Bootstrap implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        orderService.createOrder(new ClientOrder()
-                .withClientName("John Doe")
-                .withAddress("john's_address")
-                .withPizzaFlavor("ham&cheese")
-                .withStatus("confirmed")
-                .withPaid(true));
-        orderService.createOrder(new ClientOrder()
-                .withClientName("Mary Doe")
-                .withAddress("mary's_address")
-                .withPizzaFlavor("tune")
-                .withStatus("confirmed")
-                .withPaid(true));
-        orderService.createOrder(new ClientOrder()
-                .withClientName("Larry Doe")
-                .withAddress("larry's_address")
-                .withPizzaFlavor("margherita")
-                .withStatus("confirmed")
-                .withPaid(false));
+        createExamples(30);
+    }
+    private void createExamples(int n) {
+        List<String> statusList = new ArrayList<>(List.of(
+                "confirmed","accepted","baking","pizzaReady","delivering","pizzaDelivered","finished"));
+        List<String> flavorList = new ArrayList<>(List.of(
+                "Four cheese","Ham & Cheese","Tuna","Pepperoni","Veggie Pizza","Margherita","Hawaiian Pizza"));
+        Random random = new Random();
+
+        for (int i = 0; i < n; i++) {
+            orderService.createOrder(new ClientOrder()
+                    .withClientName("name_"+i)
+                    .withAddress("address_"+i)
+                    .withPizzaFlavor(flavorList.get(random.nextInt(flavorList.size())))
+                    .withStatus(statusList.get(random.nextInt(statusList.size())))
+                    .withPaid(random.nextBoolean()));
+        }
+
     }
 }

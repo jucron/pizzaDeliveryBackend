@@ -44,7 +44,7 @@ public class OrderController {
     @GetMapping("{orderId}")
     @ResponseStatus(HttpStatus.OK)
     public ClientOrder getOrder(@PathVariable String orderId) {
-        return orderService.getOrder();
+        return orderService.getOrder(orderId);
     }
 
     @PutMapping ("{orderId}/{orderStatus}")

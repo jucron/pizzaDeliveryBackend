@@ -54,8 +54,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public ClientOrder getOrder() {
-        return null;
+    public ClientOrder getOrder(String orderId) {
+        return orderRepository.findById(UUID.fromString(orderId)).get();
     }
 
 
