@@ -12,5 +12,6 @@ import java.util.List;
 @NoArgsConstructor
 @With
 public class EntityList<T> {
+    private int count;
     private List<T> entityList;
 }
