@@ -10,3 +10,5 @@ Adding to JVM (admin) password: 'changeit'
 Bash:
 keytool -importcert -file myCertificate.crt -alias pizzaDelivery -keystore /c/Program\ Files/Amazon\ Corretto/jdk17.0.3_6/lib/security/cacerts
 keytool -importcert -file myCertificate.crt -alias pizzaDelivery -keystore “c:/Program Files/Amazon Corretto/jdk17.0.3_6/lib/security/cacerts”
+
+keytool -export -keystore heroku_cacerts -alias springboot -file myCertificate.crt
