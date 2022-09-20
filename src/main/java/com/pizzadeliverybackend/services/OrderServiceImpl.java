@@ -93,7 +93,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public String createOrder(ClientOrder order) {
+        log.info("CreateOrder executed");
         order.setOrderTime(LocalTime.now());
+        order.setStatus("confirmed");
         order.setOrderHistory(historyRepository.save(new OrderHistory()));
         ClientOrder orderSaved = orderRepository.save(order);
         return orderSaved.getId().toString();
