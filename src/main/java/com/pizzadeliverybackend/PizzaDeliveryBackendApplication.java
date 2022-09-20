@@ -1,6 +1,7 @@
 package com.pizzadeliverybackend;
 
 import com.pizzadeliverybackend.domain.ClientOrder;
+import com.pizzadeliverybackend.domain.OrderHistory;
 import com.pizzadeliverybackend.services.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 
 @SpringBootApplication
@@ -37,13 +39,23 @@ class Bootstrap implements CommandLineRunner {
                 "Four cheese","Ham & Cheese","Tuna","Pepperoni","Veggie Pizza","Margherita","Hawaiian Pizza"));
         Random random = new Random();
 
-        for (int i = 0; i < n; i++) {
-            orderService.createOrder(new ClientOrder()
+        for (int i = 1; i <= n; i++) {
+            String status = statusList.get(random.nextInt(statusList.size()));
+            String orderId = orderService.createOrder(new ClientOrder()
                     .withClientName("name_"+i)
                     .withAddress("address_"+i)
                     .withPizzaFlavor(flavorList.get(random.nextInt(flavorList.size())))
-                    .withStatus(statusList.get(random.nextInt(statusList.size())))
-                    .withPaid(random.nextBoolean()));
+                    .withPaid(random.nextBoolean())
+                    .withStatus(status));
+            if (Objects.equals(status, "finished")) {
+                orderService.updateHistoryOrder(orderId,new OrderHistory()
+                        .withClientFeedbackNotes("The service was ok_"+i)
+                        .withClientFeedbackScore(random.nextInt(6))
+                );
+                orderService.updateHistoryOrder(orderId,new OrderHistory()
+                        .withDeliveryFeedback("My delivery was ok_"+i)
+                );
+            }
         }
 
     }

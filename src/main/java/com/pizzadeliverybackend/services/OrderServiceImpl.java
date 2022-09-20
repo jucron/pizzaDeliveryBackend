@@ -2,6 +2,8 @@ package com.pizzadeliverybackend.services;
 
 import com.pizzadeliverybackend.domain.ClientOrder;
 import com.pizzadeliverybackend.domain.EntityList;
+import com.pizzadeliverybackend.domain.OrderHistory;
+import com.pizzadeliverybackend.repositories.HistoryRepository;
 import com.pizzadeliverybackend.repositories.OrderRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +21,7 @@ import java.util.stream.Stream;
 @Slf4j
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
+    private final HistoryRepository historyRepository;
     @Override
     public EntityList<ClientOrder> getOrders() {
         List<ClientOrder> repositoryAll = orderRepository.findAll();
@@ -65,6 +68,21 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findById(UUID.fromString(orderId)).get();
     }
 
+    @Override
+    public void updateHistoryOrder(String orderId, OrderHistory orderHistory) {
+        ClientOrder orderInRepo = orderRepository.findById(UUID.fromString(orderId)).get();
+        OrderHistory orderHistoryInRepo = orderInRepo.getOrderHistory();
+
+        if (orderHistory.getClientFeedbackNotes()!=null) { //history from client
+            orderHistoryInRepo.setClientFeedbackScore(orderHistory.getClientFeedbackScore());
+            orderHistoryInRepo.setClientFeedbackNotes(orderHistory.getClientFeedbackNotes());
+        } else { //history from delivery
+            orderHistoryInRepo.setDeliveryFeedback(orderHistory.getDeliveryFeedback());
+            orderHistoryInRepo.setDeliveryTime(LocalTime.now());
+        }
+        historyRepository.save(orderHistoryInRepo);
+    }
+
 
     @Override
     public void changeOrderStatus(String orderId, String orderStatus) {
@@ -76,6 +94,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public String createOrder(ClientOrder order) {
         order.setOrderTime(LocalTime.now());
+        order.setOrderHistory(historyRepository.save(new OrderHistory()));
         ClientOrder orderSaved = orderRepository.save(order);
         return orderSaved.getId().toString();
     }

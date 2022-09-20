@@ -6,9 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.With;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalTime;
 import java.util.UUID;
 
@@ -30,4 +28,10 @@ public class ClientOrder {
     private String status;
     private LocalTime orderTime;
     private boolean paid;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    private OrderHistory orderHistory;
+
+    @OneToOne
+    private Account account;
 }
