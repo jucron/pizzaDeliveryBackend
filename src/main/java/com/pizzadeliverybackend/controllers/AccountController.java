@@ -23,6 +23,7 @@ public class AccountController {
     @PostMapping("login")
     @ResponseStatus(HttpStatus.CREATED)
     public Response processLogin(@RequestBody Account account) {
+
         return accountService.processLogin(account);
     }
 

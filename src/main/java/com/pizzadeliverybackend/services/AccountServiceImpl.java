@@ -1,5 +1,6 @@
 package com.pizzadeliverybackend.services;
 
+import com.pizzadeliverybackend.controllers.FlowableController;
 import com.pizzadeliverybackend.domain.Account;
 import com.pizzadeliverybackend.domain.Response;
 import com.pizzadeliverybackend.repositories.AccountRepository;
@@ -14,16 +15,18 @@ public class AccountServiceImpl implements AccountService {
     private final AccountRepository accountRepository;
     @Override
     public void createAccount(Account account) {
+        log.info("createAccount executed");
         accountRepository.save(account);
     }
 
     @Override
     public Response processLogin(Account account) {
         log.info("processLogin executed");
-        //check login existence
-        //throw back process pending tasks
+        //todo: check login existence and return error if not found
+        //todo: return username
+        FlowableController.taskCount=0;
         return new Response()
-                .withMessage("task_1");
+                .withMessage(account.getUsername());
     }
 }
 
