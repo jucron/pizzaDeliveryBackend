@@ -1,8 +1,10 @@
 package com.pizzadeliverybackend.services;
 
+import com.pizzadeliverybackend.domain.Account;
 import com.pizzadeliverybackend.domain.ClientOrder;
 import com.pizzadeliverybackend.domain.EntityList;
 import com.pizzadeliverybackend.domain.OrderHistory;
+import com.pizzadeliverybackend.repositories.AccountRepository;
 import com.pizzadeliverybackend.repositories.HistoryRepository;
 import com.pizzadeliverybackend.repositories.OrderRepository;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalTime;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -22,6 +25,8 @@ import java.util.stream.Stream;
 public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
     private final HistoryRepository historyRepository;
+
+    private final AccountRepository accountRepository;
     @Override
     public EntityList<ClientOrder> getOrders() {
         List<ClientOrder> repositoryAll = orderRepository.findAll();
@@ -85,6 +90,16 @@ public class OrderServiceImpl implements OrderService {
         historyRepository.save(orderHistoryInRepo);
     }
 
+    @Override
+    public ClientOrder getOrderByUsername(String username) {
+        log.info("getOrderByUsername accessed");
+        return orderRepository.findAll().stream()
+                .filter(clientOrder ->
+                Objects.equals(clientOrder.getAccount().getUsername(),
+                        username))
+                .collect(Collectors.toList()).get(0);
+    }
+
 
     @Override
     public void changeOrderStatus(String orderId, String orderStatus) {
@@ -99,7 +114,14 @@ public class OrderServiceImpl implements OrderService {
         order.setOrderTime(LocalTime.now());
         order.setStatus("confirmed");
         order.setOrderHistory(historyRepository.save(new OrderHistory()));
+        if (order.getAccount()!=null) {
+            if (order.getAccount().getUsername()!=null) {
+                Account account = accountRepository.findByUsername(order.getAccount().getUsername()).get();
+                order.setAccount(account);
+            }
+        }
         ClientOrder orderSaved = orderRepository.save(order);
+        log.info("Order created: "+orderSaved);
         return orderSaved.getId().toString();
     }
 

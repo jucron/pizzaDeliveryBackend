@@ -7,4 +7,6 @@ public interface AccountService {
     void createAccount(Account account);
 
     Response processLogin(Account account);
+
+    Response processLogout(Account account);
 }

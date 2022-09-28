@@ -45,6 +45,13 @@ public class OrderController {
         return orderService.getOrder(orderId);
     }
 
+    @GetMapping("{username}/username")
+    @ResponseStatus(HttpStatus.OK)
+    public ClientOrder getOrderByUsername(@PathVariable String username) {
+        System.out.println("getOrderByUsername called with username: "+username);
+        return orderService.getOrderByUsername(username);
+    }
+
     @PutMapping ("{orderId}/{orderStatus}")
     @ResponseStatus(HttpStatus.ACCEPTED)
     public void changeOrderStatus(

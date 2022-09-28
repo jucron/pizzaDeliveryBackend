@@ -26,5 +26,11 @@ public class AccountController {
 
         return accountService.processLogin(account);
     }
+    @PostMapping("logout")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Response processLogout(@RequestBody Account account) {
+
+        return accountService.processLogout(account);
+    }
 
 }

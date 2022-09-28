@@ -23,4 +23,6 @@ public interface OrderService {
     ClientOrder getOrder(String orderId);
 
     void updateHistoryOrder(String orderId, OrderHistory orderHistory);
+
+    ClientOrder getOrderByUsername(String username);
 }

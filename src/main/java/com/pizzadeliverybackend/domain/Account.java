@@ -24,4 +24,8 @@ public class Account {
     private String username;
     private String password;
 
+    private String orderId;
+    private String loginStatus;
+    private String taskStatus;
+
 }
