@@ -59,7 +59,8 @@ class Bootstrap implements CommandLineRunner {
                     .withPizzaFlavor(flavorList.get(random.nextInt(flavorList.size())))
                     .withPaid(random.nextBoolean())
                     .withStatus(status)
-                    .withAccount(account));
+                    .withAccount(account))
+                        .getId().toString();
             if (Objects.equals(status, "finished")) {
                 orderService.updateHistoryOrder(orderId,new OrderHistory()
                         .withClientFeedbackNotes("The service was ok_"+i)

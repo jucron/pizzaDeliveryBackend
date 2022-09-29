@@ -12,7 +12,7 @@ public interface OrderService {
 
     void changeOrderStatus(String orderId, String orderStatus);
 
-    String createOrder(ClientOrder order);
+    ClientOrder createOrder(ClientOrder order);
 
     void deleteOrder(String orderId);
 

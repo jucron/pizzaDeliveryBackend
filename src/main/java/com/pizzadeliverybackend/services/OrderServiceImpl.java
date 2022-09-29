@@ -109,20 +109,18 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public String createOrder(ClientOrder order) {
+    public ClientOrder createOrder(ClientOrder order) {
         log.info("CreateOrder executed");
         order.setOrderTime(LocalTime.now());
         order.setStatus("confirmed");
         order.setOrderHistory(historyRepository.save(new OrderHistory()));
-        if (order.getAccount()!=null) {
-            if (order.getAccount().getUsername()!=null) {
-                Account account = accountRepository.findByUsername(order.getAccount().getUsername()).get();
-                order.setAccount(account);
-            }
-        }
+
+        Account account = accountRepository.findByUsername(order.getAccount().getUsername()).get();
+        order.setAccount(account);
+
         ClientOrder orderSaved = orderRepository.save(order);
-        log.info("Order created: "+orderSaved);
-        return orderSaved.getId().toString();
+        log.info("Order created: " + orderSaved);
+        return orderSaved;
     }
 
     @Override

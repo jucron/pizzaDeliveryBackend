@@ -20,14 +20,13 @@ public class FlowableController {
 
     @PostMapping({"{username}"})
     @ResponseStatus(HttpStatus.CREATED)
-    public Response createProcess(@RequestBody ClientOrder order, @PathVariable String username) {
+    public Response createProcess(@RequestBody ClientOrder order) {
         //todo: Create Flowable Process
-        Account account = accountRepository.findByUsername(username).get();
 
-        account.setOrderId(orderService.createOrder(order));
-        accountRepository.save(account);
+        ClientOrder orderSaved = orderService.createOrder(order);
+
         return new Response()
-                .withMessage(account.getOrderId());
+                .withMessage(orderSaved.getId().toString());
     }
 
     @GetMapping("{username}")

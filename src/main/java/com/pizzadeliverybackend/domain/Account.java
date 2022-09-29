@@ -5,10 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.With;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Data
@@ -24,8 +21,10 @@ public class Account {
     private String username;
     private String password;
 
-    private String orderId;
     private String loginStatus;
     private String taskStatus;
+
+    @OneToOne
+    private ClientOrder order;
 
 }
