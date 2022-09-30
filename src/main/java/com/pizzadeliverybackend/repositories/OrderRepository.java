@@ -10,4 +10,7 @@ import java.util.UUID;
 @Repository
 public interface OrderRepository extends JpaRepository<ClientOrder, UUID> {
     List<ClientOrder> findByStatus(String confirmed);
+
+//    @Query("SELECT o.id FROM ClientOrder o WHERE o.account.id = :accountId")
+//    UUID getOrderIdByAccountId(long accountId);
 }

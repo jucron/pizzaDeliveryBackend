@@ -32,6 +32,6 @@ public class ClientOrder {
     @OneToOne(fetch = FetchType.EAGER)
     private OrderHistory orderHistory;
 
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     private Account account;
 }

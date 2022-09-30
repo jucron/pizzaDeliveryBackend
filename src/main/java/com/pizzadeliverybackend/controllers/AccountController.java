@@ -1,7 +1,7 @@
 package com.pizzadeliverybackend.controllers;
 
 import com.pizzadeliverybackend.domain.Account;
-import com.pizzadeliverybackend.domain.Response;
+import com.pizzadeliverybackend.model.Response;
 import com.pizzadeliverybackend.services.AccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

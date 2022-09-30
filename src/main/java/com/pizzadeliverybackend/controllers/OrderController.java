@@ -1,8 +1,9 @@
 package com.pizzadeliverybackend.controllers;
 
 import com.pizzadeliverybackend.domain.ClientOrder;
-import com.pizzadeliverybackend.domain.EntityList;
 import com.pizzadeliverybackend.domain.OrderHistory;
+import com.pizzadeliverybackend.model.EntityList;
+import com.pizzadeliverybackend.model.OrderMinimal;
 import com.pizzadeliverybackend.services.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -41,7 +42,7 @@ public class OrderController {
 
     @GetMapping("{orderId}")
     @ResponseStatus(HttpStatus.OK)
-    public ClientOrder getOrder(@PathVariable String orderId) {
+    public OrderMinimal getOrder(@PathVariable String orderId) {
         return orderService.getOrder(orderId);
     }
 

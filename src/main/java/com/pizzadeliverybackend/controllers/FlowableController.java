@@ -2,7 +2,7 @@ package com.pizzadeliverybackend.controllers;
 
 import com.pizzadeliverybackend.domain.Account;
 import com.pizzadeliverybackend.domain.ClientOrder;
-import com.pizzadeliverybackend.domain.Response;
+import com.pizzadeliverybackend.model.Response;
 import com.pizzadeliverybackend.repositories.AccountRepository;
 import com.pizzadeliverybackend.services.OrderService;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,7 @@ public class FlowableController {
     private final AccountRepository accountRepository;
 
 
-    @PostMapping({"{username}"})
+    @PostMapping()
     @ResponseStatus(HttpStatus.CREATED)
     public Response createProcess(@RequestBody ClientOrder order) {
         //todo: Create Flowable Process

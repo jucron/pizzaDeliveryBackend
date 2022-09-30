@@ -1,8 +1,9 @@
 package com.pizzadeliverybackend.services;
 
 import com.pizzadeliverybackend.domain.ClientOrder;
-import com.pizzadeliverybackend.domain.EntityList;
 import com.pizzadeliverybackend.domain.OrderHistory;
+import com.pizzadeliverybackend.model.EntityList;
+import com.pizzadeliverybackend.model.OrderMinimal;
 
 
 public interface OrderService {
@@ -20,7 +21,7 @@ public interface OrderService {
 
     EntityList<ClientOrder> getFinishedOrders();
 
-    ClientOrder getOrder(String orderId);
+    OrderMinimal getOrder(String orderId);
 
     void updateHistoryOrder(String orderId, OrderHistory orderHistory);
 

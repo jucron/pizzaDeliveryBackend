@@ -2,8 +2,9 @@ package com.pizzadeliverybackend.services;
 
 import com.pizzadeliverybackend.domain.Account;
 import com.pizzadeliverybackend.domain.ClientOrder;
-import com.pizzadeliverybackend.domain.EntityList;
 import com.pizzadeliverybackend.domain.OrderHistory;
+import com.pizzadeliverybackend.model.EntityList;
+import com.pizzadeliverybackend.model.OrderMinimal;
 import com.pizzadeliverybackend.repositories.AccountRepository;
 import com.pizzadeliverybackend.repositories.HistoryRepository;
 import com.pizzadeliverybackend.repositories.OrderRepository;
@@ -69,10 +70,10 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public ClientOrder getOrder(String orderId) {
-        ClientOrder order = orderRepository.findById(UUID.fromString(orderId)).get();
+    public OrderMinimal getOrder(String orderId) {
+        ClientOrder order = orderRepository.findById(UUID.fromString(orderId)).orElse(null);
         log.info("Order found: "+order);
-        return order;
+        return order==null ? null : new OrderMinimal(order);
     }
 
     @Override
@@ -120,6 +121,9 @@ public class OrderServiceImpl implements OrderService {
 
         ClientOrder orderSaved = orderRepository.save(order);
         log.info("Order created: " + orderSaved);
+
+//        account.setOrder(orderSaved);
+//        accountRepository.save(account);
         return orderSaved;
     }
 
