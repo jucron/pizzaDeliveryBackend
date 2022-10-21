@@ -23,13 +23,12 @@ public class AccountController {
     @PostMapping("login")
     @ResponseStatus(HttpStatus.CREATED)
     public Response processLogin(@RequestBody Account account) {
-
         return accountService.processLogin(account);
     }
+
     @PostMapping("logout")
     @ResponseStatus(HttpStatus.CREATED)
     public Response processLogout(@RequestBody Account account) {
-
         return accountService.processLogout(account);
     }
 

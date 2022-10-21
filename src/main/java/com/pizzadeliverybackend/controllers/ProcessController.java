@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/flowable/client/")
 @RequiredArgsConstructor
 @CrossOrigin
-public class FlowableController {
+public class ProcessController {
     private final OrderService orderService;
     private final AccountRepository accountRepository;
 
