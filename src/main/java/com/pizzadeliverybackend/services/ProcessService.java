@@ -1,12 +1,15 @@
 package com.pizzadeliverybackend.services;
 
-import com.pizzadeliverybackend.domain.ClientOrder;
-
-import java.util.Map;
+import com.pizzadeliverybackend.model.OrderMinimal;
+import com.pizzadeliverybackend.model.Response;
 
 public interface ProcessService {
 
-    void startProcess(String key, String username, ClientOrder order);
+    void startProcess(String key, String username);
     void completeTask(String username, Object object);
-    Map<String, Object> getProcessData(String username);
+    Response getTaskId(String username);
+//    Response getOrderId(String username);
+    Response getOrderStatus(String username);
+
+    OrderMinimal getOrder(String username);
 }

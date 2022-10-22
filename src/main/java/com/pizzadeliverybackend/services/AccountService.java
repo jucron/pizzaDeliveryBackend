@@ -9,4 +9,6 @@ public interface AccountService {
     Response processLogin(Account account);
 
     Response processLogout(Account account);
+
+    Response checkLogin(String username);
 }

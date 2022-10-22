@@ -32,4 +32,9 @@ public class AccountController {
         return accountService.processLogout(account);
     }
 
+    @PostMapping("{username}/checkLogin")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Response checkLogin(@PathVariable String username) {
+        return accountService.checkLogin(username);
+    }
 }

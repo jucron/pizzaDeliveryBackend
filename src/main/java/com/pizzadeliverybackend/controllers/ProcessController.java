@@ -1,10 +1,8 @@
 package com.pizzadeliverybackend.controllers;
 
-import com.pizzadeliverybackend.domain.Account;
-import com.pizzadeliverybackend.domain.ClientOrder;
+import com.pizzadeliverybackend.model.OrderMinimal;
 import com.pizzadeliverybackend.model.Response;
-import com.pizzadeliverybackend.repositories.AccountRepository;
-import com.pizzadeliverybackend.services.OrderService;
+import com.pizzadeliverybackend.services.ProcessService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -14,39 +12,41 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 @CrossOrigin
 public class ProcessController {
-    private final OrderService orderService;
-    private final AccountRepository accountRepository;
+    private final ProcessService processService;
 
-
-    @PostMapping()
+    @PostMapping("{caseKey}/{username}")
     @ResponseStatus(HttpStatus.CREATED)
-    public Response createProcess(@RequestBody ClientOrder order) {
-        //todo: Create Flowable Process
-
-        ClientOrder orderSaved = orderService.createOrder(order);
-
-        return new Response()
-                .withMessage(orderSaved.getId().toString());
+    public void startProcess(@PathVariable String caseKey,@PathVariable String username) {
+        processService.startProcess(caseKey,username);
     }
 
-    @GetMapping("{username}")
+    @PostMapping("{username}")
     @ResponseStatus(HttpStatus.OK)
-    public Response getClientStatus(@PathVariable String username) {
-        //todo: find Flowable process by username:
-        Account account = accountRepository.findByUsername(username).get();
-        System.out.println("ACCOUNT FOUND: "+account);
-        return new Response()
-                .withMessage(account.getLoginStatus())
-                .withMessageB(account.getTaskStatus());
+    public void completeTask(@PathVariable String username, @RequestBody Object object) {
+        processService.completeTask(username, object);
     }
 
-    @PutMapping()
-    @ResponseStatus(HttpStatus.OK)
-    public void changeClientTaskStatus(@RequestBody Account account) {
-        //todo: Complete Task in Flowable Process
-        Account existingAccount = accountRepository.findByUsername(account.getUsername()).get();
-        existingAccount.setTaskStatus(account.getTaskStatus());
-        accountRepository.save(existingAccount);
+    @GetMapping("{username}/taskId")
+    @ResponseStatus(HttpStatus.FOUND)
+    public Response getTaskId(@PathVariable String username) {
+        return processService.getTaskId(username);
     }
 
+//    @GetMapping("{username}/orderId")
+//    @ResponseStatus(HttpStatus.FOUND)
+//    public Response getOrderId(@PathVariable String username) {
+//        return processService.getOrderId(username);
+//    }
+
+    @GetMapping("{username}/orderStatus")
+    @ResponseStatus(HttpStatus.FOUND)
+    public Response getOrderStatus(@PathVariable String username) {
+        return processService.getOrderStatus(username);
+    }
+
+    @GetMapping("{username}/order")
+    @ResponseStatus(HttpStatus.FOUND)
+    public OrderMinimal getOrder(@PathVariable String username) {
+        return processService.getOrder(username);
+    }
 }

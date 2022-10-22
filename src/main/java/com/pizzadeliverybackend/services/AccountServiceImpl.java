@@ -61,5 +61,11 @@ public class AccountServiceImpl implements AccountService {
         return new Response()
                 .withMessage(account.getUsername());
     }
+
+    @Override
+    public Response checkLogin(String username) {
+        Account existingAccount = accountRepository.findByUsername(username).orElse(null);
+        return (existingAccount==null ? null : new Response().withMessage(existingAccount.getLoginStatus()));
+    }
 }
 
