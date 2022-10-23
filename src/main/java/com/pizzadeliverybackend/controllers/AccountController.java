@@ -32,8 +32,8 @@ public class AccountController {
         return accountService.processLogout(account);
     }
 
-    @PostMapping("{username}/checkLogin")
-    @ResponseStatus(HttpStatus.CREATED)
+    @GetMapping("{username}/checkLogin")
+    @ResponseStatus(HttpStatus.OK)
     public Response checkLogin(@PathVariable String username) {
         return accountService.checkLogin(username);
     }

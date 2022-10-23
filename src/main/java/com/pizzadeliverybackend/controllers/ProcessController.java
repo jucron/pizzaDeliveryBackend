@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/flowable/client/")
+@RequestMapping("/process/client/")
 @RequiredArgsConstructor
 @CrossOrigin
 public class ProcessController {
@@ -31,12 +31,6 @@ public class ProcessController {
     public Response getTaskId(@PathVariable String username) {
         return processService.getTaskId(username);
     }
-
-//    @GetMapping("{username}/orderId")
-//    @ResponseStatus(HttpStatus.FOUND)
-//    public Response getOrderId(@PathVariable String username) {
-//        return processService.getOrderId(username);
-//    }
 
     @GetMapping("{username}/orderStatus")
     @ResponseStatus(HttpStatus.FOUND)

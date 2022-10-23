@@ -62,18 +62,13 @@ public class ProcessServiceImpl implements ProcessService {
         try {
             String caseIdFromThisUsername = cmmnRuntimeService.createCaseInstanceQuery().variableValueEquals(usernameKey,username).singleResult().getId();
             String taskIdFromThisUsername = taskService.createTaskQuery().caseInstanceId(caseIdFromThisUsername).singleResult().getId();
+            log.info("taskId found: "+taskIdFromThisUsername);
             return new Response().withMessage(taskIdFromThisUsername);
         } catch (Exception e) {
-            return null;
+            log.info("no task found yet, returning Response with null message");
+            return new Response().withMessage(null);
         }
     }
-
-//    @Override
-//    public Response getOrderId(String username) {
-//        Map<String, Object> processData = cmmnRuntimeService.createCaseInstanceQuery().variableValueEquals(usernameKey,username).singleResult().getCaseVariables();
-//        return new Response().withMessage((String) processData.get(orderIdKey));
-//
-//    }
 
     @Override
     public Response getOrderStatus(String username) {
