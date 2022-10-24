@@ -27,6 +27,7 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Override
     public void startProcess(String caseKey, String username) {
+        log.info("startProcess initiated with caseKey: "+caseKey + " and username: "+username);
         //start process with caseKey identifier and username variable
         cmmnRuntimeService.createCaseInstanceBuilder()
                 .variables(Map.of(usernameKey,username)).caseDefinitionKey(caseKey).start();
