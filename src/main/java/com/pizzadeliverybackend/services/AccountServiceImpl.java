@@ -49,6 +49,7 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Response checkLogin(String username) {
         Account existingAccount = accountRepository.findByUsername(username).orElse(null);
+        log.info("CheckLogin: "+ existingAccount==null ? "Username not found in DB" : "username found with loginStatus: "+ existingAccount.getLoginStatus());
         return (existingAccount==null ? null : new Response().withMessage(existingAccount.getLoginStatus()));
     }
 }
