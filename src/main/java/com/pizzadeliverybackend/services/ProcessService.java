@@ -7,7 +7,7 @@ public interface ProcessService {
 
     void startProcess(String key, String username);
     void completeTask(String username, Object object);
-    Response getTaskId(String username);
+    Response getTaskDefKey(String username);
 //    Response getOrderId(String username);
     Response getOrderStatus(String username);
 

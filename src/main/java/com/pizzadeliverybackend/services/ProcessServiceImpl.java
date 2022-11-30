@@ -7,7 +7,7 @@ import com.pizzadeliverybackend.model.Response;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.flowable.cmmn.api.CmmnRuntimeService;
-import org.flowable.engine.TaskService;
+import org.flowable.cmmn.api.CmmnTaskService;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -18,12 +18,12 @@ import java.util.Map;
 public class ProcessServiceImpl implements ProcessService {
 
     private final CmmnRuntimeService cmmnRuntimeService;
-    private final TaskService taskService;
+    private final CmmnTaskService cmmnTaskService;
     private final OrderService orderService;
 
     private final String usernameKey = "username";
 //    private final String orderStatusKey = "orderStatus";
-    private final String orderIdKey = "username";
+    private final String orderIdKey = "order";
 
     @Override
     public void startProcess(String caseKey, String username) {
@@ -37,13 +37,16 @@ public class ProcessServiceImpl implements ProcessService {
     public void completeTask(String username, Object object) {
         //get process data related to this username:
         String caseIdFromThisUsername = cmmnRuntimeService.createCaseInstanceQuery().variableValueEquals(usernameKey,username).singleResult().getId();
-        String taskIdFromThisUsername = taskService.createTaskQuery().caseInstanceId(caseIdFromThisUsername).singleResult().getId();
+        String taskDefKeyFromThisUsername = cmmnTaskService.createTaskQuery().caseInstanceId(caseIdFromThisUsername).singleResult().getTaskDefinitionKey();
         //Execute internal changes differently from each task:
-        switch (taskIdFromThisUsername) {
+        switch (taskDefKeyFromThisUsername) {
             case "executeOrder": //Create Order for this username
-                ClientOrder orderSaved = orderService.createOrder((ClientOrder) object);
+                ClientOrder orderParameter = (ClientOrder) object;
+//                ClientOrder orderSaved = orderParameter;
+                ClientOrder orderSaved = orderService.createOrder(orderParameter);
+//                System.out.println(orderSaved +" ----" + orderParameter);
                 Map<String, Object> processVariables = cmmnRuntimeService.getVariables(caseIdFromThisUsername);
-                processVariables.put(orderIdKey,orderSaved.getId());
+                processVariables.put(orderIdKey,orderSaved.getId().toString());
                 cmmnRuntimeService.setVariables(caseIdFromThisUsername,processVariables);
                 break;
             case "endFollowUp": //no Data to process at this stage
@@ -55,18 +58,19 @@ public class ProcessServiceImpl implements ProcessService {
                 break;
         }
         //Complete task in Flowable:
-        taskService.complete(taskIdFromThisUsername);
+        String taskIdFromThisUsername = cmmnTaskService.createTaskQuery().caseInstanceId(caseIdFromThisUsername).singleResult().getId();
+        cmmnTaskService.complete(taskIdFromThisUsername);
     }
 
     @Override
-    public Response getTaskId(String username) {
+    public Response getTaskDefKey(String username) {
         try {
             String caseIdFromThisUsername = cmmnRuntimeService.createCaseInstanceQuery().variableValueEquals(usernameKey,username).singleResult().getId();
-            String taskIdFromThisUsername = taskService.createTaskQuery().caseInstanceId(caseIdFromThisUsername).singleResult().getId();
-            log.info("taskId found: "+taskIdFromThisUsername);
-            return new Response().withMessage(taskIdFromThisUsername);
+            String taskDefKeyFromThisUsername = cmmnTaskService.createTaskQuery().caseInstanceId(caseIdFromThisUsername).singleResult().getTaskDefinitionKey();
+            log.info("getTaskDefKey: taskDefKey found - "+taskDefKeyFromThisUsername);
+            return new Response().withMessage(taskDefKeyFromThisUsername);
         } catch (Exception e) {
-            log.info("no task found yet, returning Response with null message");
+            log.info("getTaskDefKey: no task found yet, returning Response with 'no_task' message");
             return new Response().withMessage(null);
         }
     }

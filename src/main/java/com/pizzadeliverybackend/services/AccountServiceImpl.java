@@ -34,7 +34,7 @@ public class AccountServiceImpl implements AccountService {
         existentAccount.setLoginStatus("logged");
         accountRepository.save(existentAccount);
 
-        return processService.getTaskId(account.getUsername());
+        return processService.getTaskDefKey(account.getUsername());
     }
 
     @Override

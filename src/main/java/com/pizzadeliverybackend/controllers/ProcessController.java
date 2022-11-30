@@ -29,7 +29,7 @@ public class ProcessController {
     @GetMapping("{username}/taskId")
     @ResponseStatus(HttpStatus.FOUND)
     public Response getTaskId(@PathVariable String username) {
-        return processService.getTaskId(username);
+        return processService.getTaskDefKey(username);
     }
 
     @GetMapping("{username}/orderStatus")
