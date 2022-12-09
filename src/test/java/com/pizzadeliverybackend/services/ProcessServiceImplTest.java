@@ -18,6 +18,8 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -35,11 +37,13 @@ class ProcessServiceImplTest {
     private CmmnTaskService cmmnTaskService;
     @Mock
     private OrderService orderService;
+    private final UUID orderId = UUID.randomUUID();
 
     @BeforeAll
     void setUp() {
         String caseKey = "pizzaOrderCase";
         String username = "john";
+        given(orderService.createOrder(any())).willReturn(new ClientOrder().withId(orderId));
         processService = new ProcessServiceImpl(cmmnRuntimeService, cmmnTaskService, orderService);
         processService.startProcess(caseKey,username);
     }
@@ -48,14 +52,14 @@ class ProcessServiceImplTest {
     void startProcess() {
         String caseIdFromThisUsername = cmmnRuntimeService.createCaseInstanceQuery().variableValueEquals(usernameKey,username).singleResult().getId();
         assertNotNull(caseIdFromThisUsername);
+        String taskIdFromThisUsername = cmmnTaskService.createTaskQuery().caseInstanceId(caseIdFromThisUsername).singleResult().getTaskDefinitionKey();
+        assertEquals("executeOrder",taskIdFromThisUsername);
     }
 
     @Test
     void completeTask() {
         //given
-        UUID orderId = UUID.randomUUID();
         ClientOrder order = new ClientOrder().withId(orderId);
-//        given(orderService.createOrder(any())).willReturn(new ClientOrder().withId(orderId));
         //when
         processService.completeTask(username,order);
         //then
@@ -63,8 +67,7 @@ class ProcessServiceImplTest {
         Map<String, Object> processVariables = cmmnRuntimeService.getVariables(caseIdFromThisUsername);
 
         assertEquals(order.getId().toString(),(processVariables.get(orderIdKey))); //assert order is stored in variables
-        String taskIdFromThisUsername = cmmnTaskService.createTaskQuery().caseInstanceId(caseIdFromThisUsername).singleResult().getTaskDefinitionKey();
-        assertEquals("endFollowUp",taskIdFromThisUsername);
+
     }
 
     @Test

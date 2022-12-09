@@ -36,15 +36,13 @@ public class ProcessServiceImpl implements ProcessService {
     @Override
     public void completeTask(String username, Object object) {
         //get process data related to this username:
-        String caseIdFromThisUsername = cmmnRuntimeService.createCaseInstanceQuery().variableValueEquals(usernameKey,username).singleResult().getId();
-        String taskDefKeyFromThisUsername = cmmnTaskService.createTaskQuery().caseInstanceId(caseIdFromThisUsername).singleResult().getTaskDefinitionKey();
+        String caseIdFromThisUsername = getCaseIdFromThisUsername(username);
+        String taskDefKeyFromThisUsername = getTaskDefKeyFromThisUsername(caseIdFromThisUsername);
         //Execute internal changes differently from each task:
         switch (taskDefKeyFromThisUsername) {
             case "executeOrder": //Create Order for this username
                 ClientOrder orderParameter = (ClientOrder) object;
-//                ClientOrder orderSaved = orderParameter;
                 ClientOrder orderSaved = orderService.createOrder(orderParameter);
-//                System.out.println(orderSaved +" ----" + orderParameter);
                 Map<String, Object> processVariables = cmmnRuntimeService.getVariables(caseIdFromThisUsername);
                 processVariables.put(orderIdKey,orderSaved.getId().toString());
                 cmmnRuntimeService.setVariables(caseIdFromThisUsername,processVariables);
@@ -58,27 +56,28 @@ public class ProcessServiceImpl implements ProcessService {
                 break;
         }
         //Complete task in Flowable:
-        String taskIdFromThisUsername = cmmnTaskService.createTaskQuery().caseInstanceId(caseIdFromThisUsername).singleResult().getId();
+        String taskIdFromThisUsername = getTaskIdFromThisUsername(caseIdFromThisUsername);
         cmmnTaskService.complete(taskIdFromThisUsername);
     }
+
 
     @Override
     public Response getTaskDefKey(String username) {
         try {
-            String caseIdFromThisUsername = cmmnRuntimeService.createCaseInstanceQuery().variableValueEquals(usernameKey,username).singleResult().getId();
-            String taskDefKeyFromThisUsername = cmmnTaskService.createTaskQuery().caseInstanceId(caseIdFromThisUsername).singleResult().getTaskDefinitionKey();
+            String caseIdFromThisUsername = getCaseIdFromThisUsername(username);
+            String taskDefKeyFromThisUsername = getTaskDefKeyFromThisUsername(caseIdFromThisUsername);
             log.info("getTaskDefKey: taskDefKey found - "+taskDefKeyFromThisUsername);
             return new Response().withMessage(taskDefKeyFromThisUsername);
         } catch (Exception e) {
             log.info("getTaskDefKey: no task found yet, returning Response with 'no_task' message");
-            return new Response().withMessage(null);
+            return new Response().withMessage("no_task");
         }
     }
 
     @Override
     public Response getOrderStatus(String username) {
         try {
-            Map<String, Object> processData = cmmnRuntimeService.createCaseInstanceQuery().variableValueEquals(usernameKey,username).singleResult().getCaseVariables();
+            Map<String, Object> processData = getCaseVariablesFromThisUsername(username);
             return new Response().withMessage(
                     orderService.getOrder(processData.get(orderIdKey).toString()).getStatus()
             );
@@ -87,13 +86,31 @@ public class ProcessServiceImpl implements ProcessService {
         }
     }
 
+
+
     @Override
     public OrderMinimal getOrder(String username) {
         try {
-            Map<String, Object> processData = cmmnRuntimeService.createCaseInstanceQuery().variableValueEquals(usernameKey,username).singleResult().getCaseVariables();
+            Map<String, Object> processData = getCaseVariablesFromThisUsername(username);
             return orderService.getOrder(processData.get(orderIdKey).toString());
         } catch (Exception e) {
             return null;
         }
+    }
+
+    private String getTaskDefKeyFromThisUsername(String caseIdFromThisUsername) {
+        return cmmnTaskService.createTaskQuery().caseInstanceId(caseIdFromThisUsername).singleResult().getTaskDefinitionKey();
+    }
+
+    private String getCaseIdFromThisUsername(String username) {
+        return cmmnRuntimeService.createCaseInstanceQuery().variableValueEquals(usernameKey, username).singleResult().getId();
+    }
+
+    private String getTaskIdFromThisUsername(String caseIdFromThisUsername) {
+        return cmmnTaskService.createTaskQuery().caseInstanceId(caseIdFromThisUsername).singleResult().getId();
+    }
+
+    private Map<String, Object> getCaseVariablesFromThisUsername(String username) {
+        return cmmnRuntimeService.createCaseInstanceQuery().variableValueEquals(usernameKey, username).singleResult().getCaseVariables();
     }
 }

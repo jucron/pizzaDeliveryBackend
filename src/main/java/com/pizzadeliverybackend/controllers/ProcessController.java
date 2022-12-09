@@ -7,10 +7,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+
 @RestController
 @RequestMapping("/process/client/")
 @RequiredArgsConstructor
-@CrossOrigin
 public class ProcessController {
     private final ProcessService processService;
 
@@ -26,20 +27,20 @@ public class ProcessController {
         processService.completeTask(username, object);
     }
 
-    @GetMapping("{username}/taskId")
-    @ResponseStatus(HttpStatus.FOUND)
-    public Response getTaskId(@PathVariable String username) {
+    @GetMapping("{username}/taskDef")
+    @ResponseStatus(HttpStatus.OK)
+    public Response getTaskId(@PathVariable String username, HttpServletResponse response) {
         return processService.getTaskDefKey(username);
     }
 
     @GetMapping("{username}/orderStatus")
-    @ResponseStatus(HttpStatus.FOUND)
+    @ResponseStatus(HttpStatus.OK)
     public Response getOrderStatus(@PathVariable String username) {
         return processService.getOrderStatus(username);
     }
 
     @GetMapping("{username}/order")
-    @ResponseStatus(HttpStatus.FOUND)
+    @ResponseStatus(HttpStatus.OK)
     public OrderMinimal getOrder(@PathVariable String username) {
         return processService.getOrder(username);
     }
