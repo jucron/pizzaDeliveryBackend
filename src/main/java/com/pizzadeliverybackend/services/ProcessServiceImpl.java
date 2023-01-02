@@ -1,6 +1,5 @@
 package com.pizzadeliverybackend.services;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pizzadeliverybackend.domain.Account;
 import com.pizzadeliverybackend.domain.ClientOrder;
@@ -41,23 +40,21 @@ public class ProcessServiceImpl implements ProcessService {
         //get process data related to this username:
         String caseIdFromThisUsername = getCaseIdFromThisUsername(username);
         String taskDefKeyFromThisUsername = getTaskDefKeyFromThisUsername(caseIdFromThisUsername);
-        //Execute internal changes differently from each task:
         ObjectMapper objectMapper = new ObjectMapper();
+        //Execute internal changes differently from each task:
         switch (taskDefKeyFromThisUsername) {
             case "executeOrder": //Create Order for this username
                 ClientOrder orderParameter = objectMapper.convertValue(object, ClientOrder.class);
                 orderParameter.setAccount(new Account().withUsername(username));
                 ClientOrder orderSaved = orderService.createOrder(orderParameter);
-                Map<String, Object> processVariables = cmmnRuntimeService.getVariables(caseIdFromThisUsername);
-                processVariables.put(orderIdKey,orderSaved.getId().toString());
-                cmmnRuntimeService.setVariables(caseIdFromThisUsername,processVariables);
+                cmmnRuntimeService.setVariable(caseIdFromThisUsername,orderIdKey,orderSaved.getId().toString());
                 break;
             case "endFollowUp": //no Data to process at this stage
                 break;
             case "sendFeedback": //register feedback in repo
                 orderService.updateHistoryOrder(
                         (String) cmmnRuntimeService.getVariables(caseIdFromThisUsername).get(orderIdKey),
-                        objectMapper.convertValue(object, new TypeReference<OrderHistory>() {}));
+                        objectMapper.convertValue(object, OrderHistory.class));
                 break;
         }
         //Complete task in Flowable:
@@ -81,12 +78,14 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Override
     public Response getOrderStatus(String username) {
+        log.info("getOrderStatus executed for username: "+username);
         try {
             Map<String, Object> processData = getCaseVariablesFromThisUsername(username);
             return new Response().withMessage(
-                    orderService.getOrder(processData.get(orderIdKey).toString()).getStatus()
+                    orderService.getOrder((String) processData.get(orderIdKey)).getStatus()
             );
         } catch (Exception e) {
+            log.info("error: "+ e);
             return null;
         }
     }
@@ -95,10 +94,12 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Override
     public OrderMinimal getOrder(String username) {
+        log.info("getOrder executed for username: "+username);
         try {
             Map<String, Object> processData = getCaseVariablesFromThisUsername(username);
-            return orderService.getOrder(processData.get(orderIdKey).toString());
+            return orderService.getOrder((String) processData.get(orderIdKey));
         } catch (Exception e) {
+            log.info("error: "+ e);
             return null;
         }
     }
@@ -116,6 +117,6 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     private Map<String, Object> getCaseVariablesFromThisUsername(String username) {
-        return cmmnRuntimeService.createCaseInstanceQuery().variableValueEquals(usernameKey, username).singleResult().getCaseVariables();
+        return cmmnRuntimeService.getVariables(getCaseIdFromThisUsername(username));
     }
 }

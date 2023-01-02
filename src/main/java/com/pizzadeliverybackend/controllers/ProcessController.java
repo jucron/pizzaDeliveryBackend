@@ -7,8 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
-
 @RestController
 @RequestMapping("/process/client/")
 @RequiredArgsConstructor
@@ -29,7 +27,7 @@ public class ProcessController {
 
     @GetMapping("{username}/taskDef")
     @ResponseStatus(HttpStatus.OK)
-    public Response getTaskId(@PathVariable String username, HttpServletResponse response) {
+    public Response getTaskId(@PathVariable String username) {
         return processService.getTaskDefKey(username);
     }
 
