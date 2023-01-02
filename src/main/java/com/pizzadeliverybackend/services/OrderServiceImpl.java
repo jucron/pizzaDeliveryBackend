@@ -121,9 +121,6 @@ public class OrderServiceImpl implements OrderService {
 
         ClientOrder orderSaved = orderRepository.save(order);
         log.info("Order created: " + orderSaved);
-
-//        account.setOrder(orderSaved);
-//        accountRepository.save(account);
         return orderSaved;
     }
 

@@ -1,5 +1,8 @@
 package com.pizzadeliverybackend.services;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.pizzadeliverybackend.domain.Account;
 import com.pizzadeliverybackend.domain.ClientOrder;
 import com.pizzadeliverybackend.domain.OrderHistory;
 import com.pizzadeliverybackend.model.OrderMinimal;
@@ -39,9 +42,11 @@ public class ProcessServiceImpl implements ProcessService {
         String caseIdFromThisUsername = getCaseIdFromThisUsername(username);
         String taskDefKeyFromThisUsername = getTaskDefKeyFromThisUsername(caseIdFromThisUsername);
         //Execute internal changes differently from each task:
+        ObjectMapper objectMapper = new ObjectMapper();
         switch (taskDefKeyFromThisUsername) {
             case "executeOrder": //Create Order for this username
-                ClientOrder orderParameter = (ClientOrder) object;
+                ClientOrder orderParameter = objectMapper.convertValue(object, ClientOrder.class);
+                orderParameter.setAccount(new Account().withUsername(username));
                 ClientOrder orderSaved = orderService.createOrder(orderParameter);
                 Map<String, Object> processVariables = cmmnRuntimeService.getVariables(caseIdFromThisUsername);
                 processVariables.put(orderIdKey,orderSaved.getId().toString());
@@ -52,7 +57,7 @@ public class ProcessServiceImpl implements ProcessService {
             case "sendFeedback": //register feedback in repo
                 orderService.updateHistoryOrder(
                         (String) cmmnRuntimeService.getVariables(caseIdFromThisUsername).get(orderIdKey),
-                        (OrderHistory) object);
+                        objectMapper.convertValue(object, new TypeReference<OrderHistory>() {}));
                 break;
         }
         //Complete task in Flowable:
